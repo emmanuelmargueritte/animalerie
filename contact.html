@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Animalerie - Accueil</title>
+  <title>Contact — Animalerie</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -14,31 +14,31 @@
         <a href="/">Accueil</a>
         <a href="/boutique.html">Boutique</a>
         <a href="/panier.html">Panier</a>
-        <a href="/contact.html">Contact</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <section class="hero">
-      <h2>Tout pour vos animaux — rapide, local et sécurisé</h2>
-      <p>Livraison ou retrait en magasin. Paiement sécurisé.</p>
-      <a class="btn" href="/boutique.html">Voir la boutique</a>
-    </section>
-
-    <section>
-      <h3>Produits populaires</h3>
-      <div id="produits" class="grid"></div>
-    </section>
+    <h2>Contact</h2>
+    <form id="contactForm">
+      <label>Nom <input name="nom" required></label>
+      <label>Email <input type="email" name="email" required></label>
+      <label>Message <textarea name="message" required></textarea></label>
+      <button type="submit" class="btn">Envoyer</button>
+    </form>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; <span id="annee"></span> Animalerie</p>
+      <p>&copy; Animalerie</p>
     </div>
   </footer>
 
-  <script src="/js/produits.js"></script>
-  <script>document.getElementById('annee').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', e => {
+      e.preventDefault();
+      alert('Merci — formulaire démo (à connecter à un backoffice).');
+    });
+  </script>
 </body>
 </html>

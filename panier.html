@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Animalerie - Accueil</title>
+  <title>Panier — Animalerie</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -20,25 +20,20 @@
   </header>
 
   <main class="container">
-    <section class="hero">
-      <h2>Tout pour vos animaux — rapide, local et sécurisé</h2>
-      <p>Livraison ou retrait en magasin. Paiement sécurisé.</p>
-      <a class="btn" href="/boutique.html">Voir la boutique</a>
-    </section>
-
-    <section>
-      <h3>Produits populaires</h3>
-      <div id="produits" class="grid"></div>
-    </section>
+    <h2>Votre panier</h2>
+    <div id="panier"></div>
+    <div class="actions">
+      <a class="btn" href="/boutique.html">Continuer vos achats</a>
+      <a class="btn primary" id="checkout" href="/paiement.html">Passer au paiement</a>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; <span id="annee"></span> Animalerie</p>
+      <p>&copy; Animalerie</p>
     </div>
   </footer>
 
-  <script src="/js/produits.js"></script>
-  <script>document.getElementById('annee').textContent = new Date().getFullYear();</script>
+  <script src="/js/panier.js"></script>
 </body>
 </html>
