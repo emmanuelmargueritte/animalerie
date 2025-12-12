@@ -1,5 +1,5 @@
 async function chargerProduits(){
-  const res = await fetch('/data/produits.json');
+  const res = await fetch('/produits.json');
   const produits = await res.json();
   return produits;
 }
