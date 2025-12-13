@@ -44,7 +44,10 @@
       <form id="form-ajout" class="admin-form">
         <label>Nom <input required id="nom" name="nom"></label>
         <label>Prix (XPF) <input required id="prix" name="prix" type="number" min="0" step="1"></label>
-        <label>Image (chemin) <input required id="image" name="image" placeholder="images/mon-produit.jpg"></label>
+       <label>
+  Image produit
+  <input type="file" id="imageFile" accept="image/*" required>
+</label>
         <label>Description <textarea id="description" name="description" rows="3"></textarea></label>
         <button class="btn primary" type="submit">Ajouter</button>
       </form>
