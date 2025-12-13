@@ -19,5 +19,19 @@
     "prix": 890000,
     "image": "images/cage_oiseau.jpg",
     "description": "Cage spacieuse pour petits oiseaux."
+  },
+  {
+    "id": 1765611893384,
+    "nom": "Friandises de Noel 300G",
+    "prix": 89000,
+    "image": "images/friandiseschiens.webp",
+    "description": "miam"
+  },
+  {
+    "id": 1765611928896,
+    "nom": "Friandises Chiens 250G",
+    "prix": 59000,
+    "image": "images/friandises2.webp",
+    "description": "re miam"
   }
 ]
