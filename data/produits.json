@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "nom": "Croquettes Chien 3kg",
+    "prix": 450000,
+    "image": "images/croquettes_chien.jpg",
+    "description": "Croquettes premium pour chiens adultes."
+  },
+  {
+    "id": 2,
+    "nom": "Litière Chat 5L",
+    "prix": 320000,
+    "image": "images/litiere_chat.jpg",
+    "description": "Litière agglomérante, faible poussière."
+  },
+  {
+    "id": 3,
+    "nom": "Cage Oiseau",
+    "prix": 890000,
+    "image": "images/cage_oiseau.jpg",
+    "description": "Cage spacieuse pour petits oiseaux."
+  }
+]

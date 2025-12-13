@@ -1,0 +1,31 @@
+:root{--accent:#0b84a5;--gap:16px;--bg:#f6f8fa}
+*{box-sizing:border-box}
+body{font-family:Inter,Arial,Helvetica,sans-serif;margin:0;line-height:1.5;color:#222;background:var(--bg)}
+.container{max-width:1100px;margin:0 auto;padding:16px}
+.site-header{background:var(--accent);color:#fff}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{margin:0;font-size:1.25rem}
+.brand a{color:#fff;text-decoration:none}
+.main-nav{display:flex;flex-wrap:wrap;gap:10px}
+.main-nav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:6px}
+.main-nav a[aria-current="page"]{background:rgba(255,255,255,.18)}
+.hero{background:#f3f9fb;padding:24px;border-radius:12px;margin:16px 0;border:1px solid #e6f3f7}
+.btn{display:inline-block;padding:10px 14px;border-radius:8px;text-decoration:none;background:#ddd;color:#000;border:0;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff}
+.grid{display:flex;flex-wrap:wrap;gap:16px}
+.produit{border:1px solid #eee;padding:12px;width:240px;border-radius:12px;background:#fff}
+.produit img{max-width:100%;height:auto;display:block;border-radius:10px}
+.fiche-produit{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.site-footer{background:#fff;padding:12px;margin-top:32px;border-top:1px solid #eee}
+.actions{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
+label{display:block;margin-bottom:10px}
+input,select,textarea{width:100%;padding:10px;margin-top:6px;border:1px solid #ccc;border-radius:10px;background:#fff}
+.muted{color:#666;font-size:.95rem}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin-top:16px}
+.hidden{display:none}
+.admin-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.admin-list{display:grid;gap:10px;margin:10px 0 18px}
+.admin-item{border:1px solid #eee;border-radius:12px;padding:12px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.admin-item .left{min-width:240px}
+.admin-item code{background:#f3f3f3;padding:2px 6px;border-radius:6px}
+@media(max-width:900px){.fiche-produit{grid-template-columns:1fr}.produit{width:100%}}

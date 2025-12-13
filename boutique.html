@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Animalerie - Boutique</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand"><a href="index.html">Animalerie</a></h1>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html" aria-current="page">Boutique</a>
+        <a href="panier.html">Panier</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Notre boutique</h2>
+    <div id="produits" class="grid" aria-live="polite"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="annee2"></span> Animalerie</p>
+    </div>
+  </footer>
+
+  <script src="js/produits.js"></script>
+  <script>document.getElementById('annee2').textContent = new Date().getFullYear();</script>
+</body>
+</html>
