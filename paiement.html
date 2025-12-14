@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Paiement — Animalerie</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand"><a href="index.html">Animalerie</a></h1>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="panier.html">Panier</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Paiement</h2>
+    <form id="commande">
+      <label>Nom complet <input required name="nom" autocomplete="name"></label>
+      <label>Email <input required type="email" name="email" autocomplete="email"></label>
+      <label>Adresse <input required name="adresse" autocomplete="street-address"></label>
+      <label>Choisir un créneau
+        <select name="creneau">
+          <option value="08-10">08h–10h</option>
+          <option value="10-12">10h–12h</option>
+          <option value="14-16">14h–16h</option>
+          <option value="16-18">16h–18h</option>
+        </select>
+      </label>
+      <button type="submit" class="btn primary">Payer</button>
+    </form>
+    <p id="message" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; Animalerie</p>
+    </div>
+  </footer>
+
+  <script src="js/paiement.js"></script>
+</body>
+</html>

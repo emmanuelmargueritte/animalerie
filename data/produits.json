@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "nom": "Croquettes Chien 3kg",
+    "prix": 450000,
+    "image": "images/croquettes_chien.jpg",
+    "description": "Croquettes premium pour chiens adultes."
+  },
+  {
+    "id": 2,
+    "nom": "Litière Chat 5L",
+    "prix": 320000,
+    "image": "images/litiere_chat.jpg",
+    "description": "Litière agglomérante, faible poussière."
+  },
+  {
+    "id": 3,
+    "nom": "Cage Oiseau",
+    "prix": 890000,
+    "image": "images/cage_oiseau.jpg",
+    "description": "Cage spacieuse pour petits oiseaux."
+  },
+  {
+    "id": 1765611893384,
+    "nom": "Friandises de Noel 300G",
+    "prix": 89000,
+    "image": "images/friandiseschiens.webp",
+    "description": "miam"
+  },
+  {
+    "id": 1765611928896,
+    "nom": "Friandises Chiens 250G",
+    "prix": 59000,
+    "image": "images/friandises2.webp",
+    "description": "re miam"
+  },
+  {
+    "id": 1765707020307,
+    "nom": "banane",
+    "prix": 59000,
+    "image": "https://res.cloudinary.com/dmbiuie1c/image/upload/v1765707019/animalerie/fsooab4ms4h6kv0yuln5.jpg",
+    "description": "c'est beau"
+  },
+  {
+    "id": 1765707092563,
+    "nom": "test",
+    "prix": 60000,
+    "image": "https://res.cloudinary.com/dmbiuie1c/image/upload/v1765707092/animalerie/uacjlmlzj23vnrp9y8ru.png",
+    "description": "testouille"
+  }
+]

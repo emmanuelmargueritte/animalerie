@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Animalerie</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="brand"><a href="index.html">Animalerie</a></h1>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="panier.html">Panier</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html" aria-current="page">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Admin — Gestion des produits</h2>
+
+    <section id="admin-login" class="card">
+      <h3>Connexion</h3>
+      <p class="muted">Démo : mot de passe en front. En production, on mettra une vraie auth serveur.</p>
+      <label>Mot de passe
+        <input type="password" id="admin-pass" autocomplete="current-password" placeholder="Mot de passe admin">
+      </label>
+      <button class="btn primary" id="btn-login" type="button">Se connecter</button>
+      <p id="login-msg" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="admin-panel" class="card hidden" aria-live="polite">
+      <div class="admin-header">
+        <h3>Produits</h3>
+        <button class="btn" id="btn-refresh" type="button">Rafraîchir</button>
+      </div>
+      <div id="produits-admin" class="admin-list"></div>
+
+      <h3>Ajouter un produit</h3>
+      <form id="form-ajout" class="admin-form" enctype="multipart/form-data">
+        <label>Nom <input required id="nom" name="nom"></label>
+        <label>Prix (XPF) <input required id="prix" name="prix" type="number" min="0" step="1"></label>
+        <label> Image produit <input type="file" name="image" accept="image/*" required></label>
+        <label>Description <textarea id="description" name="description" rows="3"></textarea></label>
+        <button class="btn primary" type="submit">Ajouter</button>
+      </form>
+
+      <p class="muted">Astuce images : dépose tes fichiers dans le dossier <code>images/</code> puis renseigne <code>images/nom.jpg</code>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; Animalerie</p>
+    </div>
+  </footer>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
