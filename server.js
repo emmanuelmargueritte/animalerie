@@ -13,6 +13,27 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+// TEMPORAIRE — initialisation de la base
+app.get('/_init_db', async (req, res) => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS produits (
+        id BIGINT PRIMARY KEY,
+        nom TEXT NOT NULL,
+        prix INTEGER NOT NULL,
+        image TEXT NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    res.send('✅ Table produits créée');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('❌ Erreur création table');
+  }
+});
+
+
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
