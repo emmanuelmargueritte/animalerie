@@ -6,6 +6,13 @@ console.log("🔥 SERVER.JS LANCÉ 🔥");
 require("dotenv").config();
 
 const express = require("express");
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
@@ -223,6 +230,11 @@ app.post("/create-checkout-session", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+pool.query('SELECT NOW()')
+  .then(res => console.log('✅ PostgreSQL connecté:', res.rows[0]))
+  .catch(err => console.error('❌ Erreur PostgreSQL', err));
+
 
 // =========================
 // START SERVER
