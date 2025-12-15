@@ -14,6 +14,7 @@ const cloudinary = require("cloudinary").v2;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 // =========================
 // CHECK CONFIG (LOGS)
 // =========================
@@ -59,6 +60,17 @@ app.use(express.static(path.join(__dirname)));
 // MULTER (UPLOAD TEMP)
 // =========================
 const upload = multer({ dest: "tmp/" });
+
+app.post('/admin-login', (req, res) => {
+
+
+  if (!req.body.password || req.body.password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Mot de passe incorrect' });
+  }
+
+  res.sendStatus(200);
+});
+
 
 // =========================
 // PRODUITS JSON

@@ -1,7 +1,6 @@
 // ===============================
 // AUTH ADMIN (démo locale)
 // ===============================
-const PASSWORD = 'admin123'; // À remplacer plus tard par une vraie auth serveur
 
 const loginSection = document.getElementById('admin-login');
 const panelSection = document.getElementById('admin-panel');
@@ -74,7 +73,13 @@ async function refresh() {
 document.getElementById('btn-login').addEventListener('click', async () => {
   const pass = document.getElementById('admin-pass').value;
 
-  if (pass !== PASSWORD) {
+  const res = await fetch('/admin-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pass })
+  });
+
+  if (!res.ok) {
     loginMsg.textContent = 'Mot de passe incorrect.';
     return;
   }
@@ -82,9 +87,9 @@ document.getElementById('btn-login').addEventListener('click', async () => {
   loginSection.classList.add('hidden');
   panelSection.classList.remove('hidden');
   loginMsg.textContent = '';
-
   await refresh();
 });
+
 
 document.getElementById('btn-refresh').addEventListener('click', refresh);
 
