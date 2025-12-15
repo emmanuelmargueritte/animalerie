@@ -1,27 +1,11 @@
-console.log('🔥 SERVER VERSION INIT_DB 🔥');
-app.get('/_ping', (req, res) => {
-  res.send('pong');
-});
-
-
 // =========================
 // SERVER.JS – COMPLET (ADMIN + CLOUDINARY + STRIPE)
 // =========================
 console.log("🔥 SERVER.JS LANCÉ 🔥");
 
-
 require("dotenv").config();
 
 const express = require("express");
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
-
-
-
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
@@ -68,27 +52,6 @@ try {
 // =========================
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
-
-// TEMPORAIRE — initialisation de la base
-app.get('/_init_db', async (req, res) => {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS produits (
-        id BIGINT PRIMARY KEY,
-        nom TEXT NOT NULL,
-        prix INTEGER NOT NULL,
-        image TEXT NOT NULL,
-        description TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-    res.send('✅ Table produits créée');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('❌ Erreur création table');
-  }
-});
-
 
 // Sert tous les fichiers (index.html, js/, css/, data/, etc.)
 app.use(express.static(path.join(__dirname)));
@@ -260,11 +223,6 @@ app.post("/create-checkout-session", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-pool.query('SELECT NOW()')
-  .then(res => console.log('✅ PostgreSQL connecté:', res.rows[0]))
-  .catch(err => console.error('❌ Erreur PostgreSQL', err));
-
 
 // =========================
 // START SERVER
