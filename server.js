@@ -1,7 +1,14 @@
+console.log('🔥 SERVER VERSION INIT_DB 🔥');
+app.get('/_ping', (req, res) => {
+  res.send('pong');
+});
+
+
 // =========================
 // SERVER.JS – COMPLET (ADMIN + CLOUDINARY + STRIPE)
 // =========================
 console.log("🔥 SERVER.JS LANCÉ 🔥");
+
 
 require("dotenv").config();
 
