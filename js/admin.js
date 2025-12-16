@@ -30,7 +30,7 @@ function renderProduits(list) {
     div.innerHTML = `
       <div class="left">
         <strong>${p.nom}</strong><br>
-        Prix: ${(p.prix / 100).toFixed(0)} XPF<br>
+        Prix: ${p.prix} XPF<br>
         <img src="${p.image}" style="max-width:100px;display:block;margin:5px 0">
         ${p.description ? `<span class="muted">${p.description}</span>` : ''}
       </div>

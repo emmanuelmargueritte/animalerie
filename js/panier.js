@@ -2,7 +2,9 @@ async function chargerProduits(){
   const res = await fetch('data/produits.json', { cache: 'no-store' });
   return await res.json();
 }
-function formatPrixCentimesXpf(x){ return (x/100).toFixed(0) + ' XPF'; }
+function formatPrixCentimesXpf(x){
+  return Number(x).toFixed(0) + ' XPF';
+}
 
 function getCartIds(){
   return JSON.parse(localStorage.getItem('panier') || '[]');

@@ -3,7 +3,10 @@ async function chargerProduits(){
   if(!res.ok) throw new Error('Impossible de charger les produits');
   return await res.json();
 }
-function formatPrixCentimesXpf(x){ return (x/100).toFixed(0) + ' XPF'; }
+function formatPrixCentimesXpf(x){
+  return Number(x).toFixed(0) + ' XPF';
+}
+
 
 function addToCart(id){
   const panier = JSON.parse(localStorage.getItem('panier') || '[]');
