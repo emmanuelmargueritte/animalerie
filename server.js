@@ -1,25 +1,32 @@
 // =========================
-// server.js — FINAL (RÈGLE A)
+// SERVER.JS – COMPLET (ADMIN + CLOUDINARY + STRIPE)
 // =========================
+console.log("🔥 SERVER.JS LANCÉ 🔥");
 
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { Pool } = require('pg');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// =========================
-// LOGS
-// =========================
-console.log('🔥 SERVER.JS LANCÉ 🔥');
-console.log('PORT =', PORT);
 
 // =========================
-// CLOUDINARY
+// CHECK CONFIG (LOGS)
+// =========================
+console.log("PORT =", PORT);
+console.log("CLOUDINARY_CLOUD_NAME =", process.env.CLOUDINARY_CLOUD_NAME ? "OK" : "MANQUANT");
+console.log("CLOUDINARY_API_KEY =", process.env.CLOUDINARY_API_KEY ? "OK" : "MANQUANT");
+console.log("CLOUDINARY_API_SECRET =", process.env.CLOUDINARY_API_SECRET ? "OK" : "MANQUANT");
+console.log("STRIPE_SECRET_KEY =", process.env.STRIPE_SECRET_KEY ? "OK" : "MANQUANT");
+console.log("DOMAIN =", process.env.DOMAIN || "(non défini, fallback localhost)");
+
+// =========================
+// CLOUDINARY CONFIG
 // =========================
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,122 +35,197 @@ cloudinary.config({
 });
 
 // =========================
-// POSTGRESQL
+// STRIPE
 // =========================
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
-
-async function initDb() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS produits (
-      id BIGINT PRIMARY KEY,
-      nom TEXT NOT NULL,
-      prix INTEGER NOT NULL,
-      image TEXT NOT NULL,
-      description TEXT,
-      created_at TIMESTAMP DEFAULT NOW()
-    );
-  `);
-  console.log('✅ DB ready');
+let stripe = null;
+try {
+  if (process.env.STRIPE_SECRET_KEY) {
+    stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+  }
+} catch (e) {
+  console.error("❌ Stripe n'a pas pu être initialisé:", e.message);
+  stripe = null;
 }
-
-initDb().catch(console.error);
 
 // =========================
 // MIDDLEWARES
 // =========================
-app.use(express.json());
+app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname));
 
-const upload = multer({ storage: multer.memoryStorage() });
+// Sert tous les fichiers (index.html, js/, css/, data/, etc.)
+app.use(express.static(path.join(__dirname)));
 
 // =========================
-// AUTH ADMIN
+// MULTER (UPLOAD TEMP)
 // =========================
+const upload = multer({ dest: "tmp/" });
+
 app.post('/admin-login', (req, res) => {
-  if (req.body.password !== process.env.ADMIN_PASSWORD) {
-    return res.sendStatus(401);
-  }
-  res.sendStatus(200);
-});
 
-// =========================
-// PRODUITS
-// =========================
-app.get('/produits', async (req, res) => {
-  const { rows } = await pool.query(
-    'SELECT id, nom, prix, image, description FROM produits ORDER BY created_at DESC'
-  );
-  res.json(rows);
-});
 
-app.post('/ajouter', upload.single('image'), async (req, res) => {
-  const { nom, prix, description } = req.body;
-  const prixInt = Number(prix);
-
-  if (!nom || !Number.isInteger(prixInt)) {
-    return res.status(400).send('Prix invalide');
+  if (!req.body.password || req.body.password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Mot de passe incorrect' });
   }
 
-  const b64 = req.file.buffer.toString('base64');
-  const dataUri = `data:${req.file.mimetype};base64,${b64}`;
-
-  const uploadResult = await cloudinary.uploader.upload(dataUri, {
-    folder: 'animalerie',
-  });
-
-  await pool.query(
-    'INSERT INTO produits (id, nom, prix, image, description) VALUES ($1,$2,$3,$4,$5)',
-    [Date.now(), nom, prixInt, uploadResult.secure_url, description || '']
-  );
-
   res.sendStatus(200);
 });
 
-app.post('/supprimer', async (req, res) => {
-  const { index } = req.body;
-  const { rows } = await pool.query(
-    'SELECT id FROM produits ORDER BY created_at DESC'
-  );
 
-  if (!rows[index]) return res.sendStatus(404);
+// =========================
+// PRODUITS JSON
+// =========================
+const produitsPath = path.join(__dirname, "data", "produits.json");
 
-  await pool.query('DELETE FROM produits WHERE id = $1', [rows[index].id]);
-  res.sendStatus(200);
+function readProduits() {
+  try {
+    if (!fs.existsSync(produitsPath)) return [];
+    return JSON.parse(fs.readFileSync(produitsPath, "utf8"));
+  } catch (e) {
+    console.error("❌ Erreur lecture produits.json:", e.message);
+    return [];
+  }
+}
+
+function writeProduits(data) {
+  fs.writeFileSync(produitsPath, JSON.stringify(data, null, 2), "utf8");
+}
+
+// =========================
+// ROUTE TEST
+// =========================
+app.get("/test", (req, res) => res.send("SERVEUR OK ✅"));
+
+// =========================
+// ADMIN - AJOUT PRODUIT (image -> Cloudinary)
+// =========================
+app.post("/ajouter", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "Image manquante (champ 'image')." });
+    }
+
+    const nom = String(req.body.nom || "").trim();
+    const prixXpf = Number(req.body.prix || 0);
+    const description = String(req.body.description || "").trim();
+
+    if (!nom || !Number.isFinite(prixXpf)) {
+      // Nettoyage temp
+      try { fs.unlinkSync(req.file.path); } catch {}
+      return res.status(400).json({ error: "Champs invalides (nom/prix)." });
+    }
+
+    // Upload Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "animalerie",
+    });
+
+    // Nettoyage temp local
+    try { fs.unlinkSync(req.file.path); } catch {}
+
+    const produits = readProduits();
+
+    const produit = {
+      id: Date.now(),
+      nom,
+      prix: Math.round(prixXpf * 100), // en centimes XPF (comme avant)
+      image: result.secure_url,         // URL Cloudinary (persistante)
+      description,
+    };
+
+    produits.push(produit);
+    writeProduits(produits);
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.error("❌ Erreur /ajouter:", err);
+    res.status(500).json({ error: "Erreur ajout produit (Cloudinary/server)." });
+  }
 });
 
 // =========================
-// STRIPE
+// ADMIN - SUPPRESSION PRODUIT
 // =========================
-app.post('/create-checkout-session', async (req, res) => {
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-  const domain = process.env.DOMAIN || `http://localhost:${PORT}`;
+app.post("/supprimer", (req, res) => {
+  try {
+    const index = Number(req.body.index);
 
-  const line_items = req.body.items.map(i => ({
-    price_data: {
-      currency: 'xpf',
-      product_data: { name: i.nom },
-      unit_amount: i.prix,
-    },
-    quantity: i.quantite,
-  }));
+    const produits = readProduits();
+    if (!Number.isFinite(index) || index < 0 || index >= produits.length) {
+      return res.status(400).json({ error: "Index invalide." });
+    }
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    mode: 'payment',
-    line_items,
-    success_url: `${domain}/paiement.html?success=1`,
-    cancel_url: `${domain}/paiement.html?cancel=1`,
-  });
+    produits.splice(index, 1);
+    writeProduits(produits);
 
-  res.json({ url: session.url });
+    res.sendStatus(200);
+  } catch (err) {
+    console.error("❌ Erreur /supprimer:", err);
+    res.status(500).json({ error: "Erreur suppression produit." });
+  }
 });
 
 // =========================
-// START
+// STRIPE - CHECKOUT
+// =========================
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(500).json({ error: "Stripe non configuré (STRIPE_SECRET_KEY manquante ou invalide)." });
+    }
+
+    const { form, panier } = req.body || {};
+    const produits = readProduits();
+
+    const counts = {};
+    (panier || []).forEach((id) => {
+      counts[id] = (counts[id] || 0) + 1;
+    });
+
+    const line_items = [];
+    for (const idStr of Object.keys(counts)) {
+      const id = Number(idStr);
+      const p = produits.find((x) => Number(x.id) === id);
+      if (!p) continue;
+
+      line_items.push({
+        price_data: {
+          currency: "xpf",
+          product_data: { name: p.nom },
+          unit_amount: p.prix, // centimes
+        },
+        quantity: counts[idStr],
+      });
+    }
+
+    if (line_items.length === 0) {
+      return res.status(400).json({ error: "Panier vide ou produits introuvables." });
+    }
+
+    const domain = process.env.DOMAIN || `http://localhost:${PORT}`;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items,
+      success_url: `${domain}/index.html?success=1`,
+      cancel_url: `${domain}/paiement.html?cancel=1`,
+      metadata: {
+        nom: form?.nom || "",
+        email: form?.email || "",
+        creneau: form?.creneau || "",
+      },
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("❌ Erreur Stripe:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// =========================
+// START SERVER
 // =========================
 app.listen(PORT, () => {
   console.log(`✅ Serveur actif sur http://localhost:${PORT}`);
